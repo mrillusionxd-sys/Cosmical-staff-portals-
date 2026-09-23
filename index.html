@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cosmical Staff Portal</title>
+  
+  <!-- FontAwesome Icons & Google Fonts -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --bg-space: #020617;
+      --card-bg: rgba(9, 14, 33, 0.85);
+      --card-border: rgba(56, 189, 248, 0.25);
+      --sidebar-bg: rgba(4, 8, 20, 0.95);
+      --text-main: #f0f9ff;
+      --text-muted: #93c5fd;
+      --accent-blue: #38bdf8;
+      --accent-deep: #1d4ed8;
+      --success: #22c55e;
+      --danger: #ef4444;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+
+    body {
+      background-color: var(--bg-space);
+      background-image: radial-gradient(circle at 50% 0%, #1e1b4b 0%, var(--bg-space) 75%);
+      color: var(--text-main);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* Layout */
+    .portal-container {
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    @media (min-width: 768px) {
+      .portal-container { flex-direction: row; }
+    }
+
+    /* Sidebar */
+    .sidebar {
+      width: 100%;
+      background: var(--sidebar-bg);
+      padding: 20px;
+      border-bottom: 1px solid var(--card-border);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      box-shadow: 5px 0 25px rgba(2, 6, 23, 0.5);
+    }
+
+    @media (min-width: 768px) {
+      .sidebar {
+        width: 260px;
+        min-height: 100vh;
+        border-bottom: none;
+        border-right: 1px solid var(--card-border);
+        position: sticky;
+        top: 0;
+      }
+    }
+
+    .brand-title {
+      font-size: 1.4rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, #60a5fa, #38bdf8, #93c5fd);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 24px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .nav-links {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .nav-btn {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: #93c5fd;
+      padding: 12px 14px;
+      border-radius: 10px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 0.9rem;
+      background: transparent;
+      border: 1px solid transparent;
+      width: 100%;
+      text-align: left;
+      transition: 0.2s;
+    }
+
+    .nav-btn:hover, .nav-btn.active {
+      background: rgba(29, 78, 216, 0.25);
+      color: #fff;
+      border-color: rgba(56, 189, 248, 0.4);
+      box-shadow: 0 0 15px rgba(56, 189, 248, 0.15);
+    }
+
+    .powered-by {
+      margin-top: 20px;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      text-align: center;
+    }
+
+    /* Main Content */
+    .main-content {
+      flex: 1;
+      padding: 20px;
+      max-width: 1100px;
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+
+    .page-title {
+      font-size: 1.6rem;
+      font-weight: 700;
+      margin-bottom: 6px;
+      color: #fff;
+    }
+
+    .page-subtitle {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      margin-bottom: 20px;
+    }
+
+    /* Cards */
+    .cosmic-card {
+      background: var(--card-bg);
+      padding: 20px;
+      border-radius: 14px;
+      border: 1px solid var(--card-border);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.37);
+      backdrop-filter: blur(8px);
+      margin-bottom: 20px;
+    }
+
+    /* Rules Grid */
+    .rules-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 15px;
+    }
+
+    @media (min-width: 600px) {
+      .rules-grid { grid-template-columns: 1fr 1fr; }
+    }
+
+    .rule-box {
+      background: rgba(15, 23, 42, 0.7);
+      border: 1px solid rgba(56, 189, 248, 0.2);
+      border-radius: 10px;
+      padding: 16px;
+    }
+
+    .rule-title {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--accent-blue);
+      margin-bottom: 8px;
+    }
+
+    .rule-list {
+      list-style: none;
+      padding-left: 0;
+    }
+
+    .rule-list li {
+      color: #cbd5e1;
+      font-size: 0.85rem;
+      margin-bottom: 6px;
+      position: relative;
+      padding-left: 16px;
+    }
+
+    .rule-list li::before {
+      content: "•";
+      position: absolute;
+      left: 0;
+      color: var(--accent-blue);
+    }
+
+    /* Forms */
+    .form-group {
+      margin-bottom: 14px;
+    }
+
+    label {
+      display: block;
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: var(--accent-blue);
+      margin-bottom: 6px;
+      text-transform: uppercase;
+    }
+
+    input, textarea {
+      width: 100%;
+      padding: 12px;
+      background: rgba(3, 7, 18, 0.9);
+      border: 1px solid var(--card-border);
+      border-radius: 8px;
+      color: #fff;
+      font-size: 0.9rem;
+      outline: none;
+      transition: 0.2s;
+    }
+
+    input:focus, textarea:focus {
+      border-color: var(--accent-blue);
+      box-shadow: 0 0 10px rgba(56, 189, 248, 0.2);
+    }
+
+    .btn {
+      width: 100%;
+      padding: 12px;
+      border: none;
+      border-radius: 8px;
+      font-weight: 700;
+      font-size: 0.95rem;
+      cursor: pointer;
+      background: linear-gradient(135deg, #1d4ed8, #38bdf8);
+      color: white;
+      transition: 0.2s;
+      box-shadow: 0 4px 15px rgba(29, 78, 216, 0.4);
+    }
+
+    .btn:hover {
+      opacity: 0.9;
+      box-shadow: 0 6px 20px rgba(56, 189, 248, 0.5);
+    }
+
+    /* Admin Table Styling */
+    .table-container {
+      width: 100%;
+      overflow-x: auto;
+    }
+
+    .app-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.85rem;
+      min-width: 750px;
+    }
+
+    .app-table th, .app-table td {
+      padding: 12px 10px;
+      text-align: left;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .app-table th {
+      color: var(--accent-blue);
+      background: rgba(4, 8, 20, 0.5);
+    }
+
+    .badge {
+      padding: 4px 8px;
+      border-radius: 6px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      display: inline-block;
+    }
+
+    .badge.pending { background: rgba(245, 158, 11, 0.2); color: #fbbf24; }
+    .badge.accepted { background: rgba(34, 197, 94, 0.2); color: #4ade80; }
+    .badge.denied { background: rgba(239, 68, 68, 0.2); color: #f87171; }
+
+    .action-btns {
+      display: flex;
+      gap: 6px;
+    }
+
+    .action-btn {
+      padding: 6px 10px;
+      border-radius: 6px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      border: none;
+      cursor: pointer;
+      color: #fff;
+      transition: 0.2s;
+    }
+
+    .btn-accept { background: var(--success); }
+    .btn-deny { background: var(--danger); }
+    .btn-dm { background: #5865F2; text-decoration: none; display: inline-flex; align-items: center; gap: 4px; padding: 6px 10px; border-radius: 6px; font-size: 0.75rem; font-weight: 700; color: white;}
+    .btn-delete { background: #334155; }
+
+    .action-btn:hover, .btn-dm:hover { opacity: 0.85; }
+  </style>
+</head>
+<body>
+
+  <div class="portal-container">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div>
+        <div class="brand-title">
+          <i class="fa-solid fa-crown"></i> COSMICAL
+        </div>
+        <nav class="nav-links">
+          <button class="nav-btn active" data-target="rulesTab">
+            <i class="fa-solid fa-scroll"></i> Rules & Guidelines
+          </button>
+          <button class="nav-btn" data-target="applyTab">
+            <i class="fa-solid fa-wand-magic-sparkles"></i> Apply for Staff
+          </button>
+          <button class="nav-btn" data-target="adminTab">
+            <i class="fa-solid fa-lock"></i> Admin Portal
+          </button>
+        </nav>
+      </div>
+      <div class="powered-by">Powered by <strong>Mr_illusionXD</strong></div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+
+      <!-- TAB 1: Rules -->
+      <section id="rulesTab" class="tab-content active">
+        <h1 class="page-title">Staff Protocols & Guidelines</h1>
+        <p class="page-subtitle">Complete rulebook for application terms, staff behaviors, tickets, and everyday obligations.</p>
+
+        <div class="rules-grid">
+          <div class="rule-box">
+            <div class="rule-title">1. Fast Staff Application Rules</div>
+            <ul class="rule-list">
+              <li>Do not DM staff members asking to check your application status.</li>
+              <li>Providing false information or fake IDs results in an immediate blacklisting.</li>
+              <li>Must wait at least 2 weeks before re-applying if denied.</li>
+              <li>Applicants must maintain a clean warning history inside the community.</li>
+            </ul>
+          </div>
+
+          <div class="rule-box">
+            <div class="rule-title">2. Staff Rules & Conduct</div>
+            <ul class="rule-list">
+              <li>Never abuse commands (mutes, bans, kicks) for personal amusement.</li>
+              <li>Treat every server member with equal respect without bias or favoritism.</li>
+              <li>Keep all staff discussions, logs, and vote channels strictly confidential.</li>
+              <li>Remain objective and calm during intense arguments or raids.</li>
+            </ul>
+          </div>
+
+          <div class="rule-box" style="grid-column: 1 / -1;">
+            <div class="rule-title">3. Ticket Management System Rules</div>
+            <ul class="rule-list">
+              <li><strong>Prompt Claims:</strong> Claim open tickets efficiently; avoid making users wait excessively long.</li>
+              <li><strong>Professional Greeting:</strong> Always use formal welcoming templates when addressing user support inquiries.</li>
+              <li><strong>Inactivity Protocol:</strong> Ping users after 24 hours of silence and close unresolved dormant tickets after 48 hours.</li>
+              <li><strong>Escalations:</strong> Hand over severe security risks, raids, or financial grievances directly to senior admins.</li>
+            </ul>
+          </div>
+
+          <div class="rule-box" style="grid-column: 1 / -1;">
+            <div class="rule-title">4. Core Staff Duties & Daily Actions</div>
+            <ul class="rule-list">
+              <li><strong>Chat Oversight:</strong> Keep chat channels clean from spam, toxicity, and unauthorized advertising.</li>
+              <li><strong>Voice Assistance:</strong> Supervise public voice channels and prevent audio disruption or harassment.</li>
+              <li><strong>Evidence Logging:</strong> Screenshot and save proof before carrying out severe infractions like bans.</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB 2: Apply Form -->
+      <section id="applyTab" class="tab-content">
+        <h1 class="page-title">Staff Application</h1>
+        <p class="page-subtitle">Fill out the detailed questions below to apply for our team.</p>
+
+        <div class="cosmic-card">
+          <form id="appForm">
+            <div class="form-group">
+              <label>Discord Username / Tag</label>
+              <input type="text" id="discordUser" required placeholder="e.g. illusion#0001">
+            </div>
+
+            <div class="form-group">
+              <label>Discord User ID (For direct messaging)</label>
+              <input type="text" id="discordId" required placeholder="e.g. 98120391203912">
+            </div>
+
+            <div class="form-group">
+              <label>What is your Age?</label>
+              <input type="number" id="age" required min="10" max="100" placeholder="e.g. 16">
+            </div>
+
+            <div class="form-group">
+              <label>What type of bot did you use? (Bot experience / Moderation bots)</label>
+              <input type="text" id="botsUsed" required placeholder="e.g. Dyno, Mee6, Custom Bots, Ticket Tool">
+            </div>
+
+            <div class="form-group">
+              <label>Per day hours time available</label>
+              <input type="text" id="dailyHours" required placeholder="e.g. 3-4 hours daily (4 PM - 8 PM EST)">
+            </div>
+
+            <div class="form-group">
+              <label>Your Country / Timezone</label>
+              <input type="text" id="timezone" required placeholder="e.g. EST / UTC-5">
+            </div>
+
+            <div class="form-group">
+              <label>Why do you want to join Cosmical Staff?</label>
+              <textarea id="reason" rows="3" required placeholder="Write a short summary..."></textarea>
+            </div>
+
+            <button type="submit" class="btn">Submit Application</button>
+          </form>
+        </div>
+      </section>
+
+      <!-- TAB 3: Admin Portal -->
+      <section id="adminTab" class="tab-content">
+        <div id="adminGate" class="cosmic-card" style="text-align: center; max-width: 400px; margin: 40px auto;">
+          <h2 style="margin-bottom: 10px;">Admin Login</h2>
+          <input type="password" id="passkey" placeholder="Enter Passkey" style="margin-bottom: 10px;">
+          <button class="btn" id="unlockBtn">Unlock</button>
+          <p id="errorMsg" style="color: #f87171; font-size: 0.8rem; margin-top: 8px; display: none;">Wrong passkey!</p>
+        </div>
+
+        <div id="adminPanel" style="display: none;">
+          <h1 class="page-title">Manage Applications</h1>
+          <p class="page-subtitle">Review, Accept, Deny, or DM candidates directly.</p>
+          <div class="cosmic-card">
+            <div class="table-container">
+              <table class="app-table">
+                <thead>
+                  <tr>
+                    <th>User & ID</th>
+                    <th>Age / Hours</th>
+                    <th>Bots / Details</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="tableBody"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <script>
+    const PASSKEY = "Staff.Ap.Cosmical";
+    
+    let applications = [
+      { 
+        id: Date.now(),
+        user: "CosmicStar#1001", 
+        discordId: "98120391203912",
+        age: "17", 
+        timezone: "EST", 
+        dailyHours: "4 hrs/day", 
+        botsUsed: "Dyno, Ticket Tool",
+        reason: "I want to help moderate and support the community.",
+        status: "Pending" 
+      }
+    ];
+
+    document.querySelectorAll('.nav-btn').forEach(btn => {
+      btn.addEventListener('click', function() {
+        document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+        document.querySelectorAll('.nav-btn').forEach(el => el.classList.remove('active'));
+        
+        const targetTab = this.getAttribute('data-target');
+        document.getElementById(targetTab).classList.add('active');
+        this.classList.add('active');
+      });
+    });
+
+    const unlockBtn = document.getElementById('unlockBtn');
+    if (unlockBtn) {
+      unlockBtn.addEventListener('click', () => {
+        const val = document.getElementById('passkey').value;
+        if (val === PASSKEY) {
+          document.getElementById('adminGate').style.display = 'none';
+          document.getElementById('adminPanel').style.display = 'block';
+          renderTable();
+        } else {
+          document.getElementById('errorMsg').style.display = 'block';
+        }
+      });
+    }
+
+    function renderTable() {
+      const tbody = document.getElementById('tableBody');
+      tbody.innerHTML = '';
+      
+      if (applications.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="5" style="text-align: center; color: var(--text-muted); padding: 20px;">No applications found.</td></tr>`;
+        return;
+      }
+
+      applications.forEach((app) => {
+        let statusClass = 'pending';
+        if (app.status === 'Accepted') statusClass = 'accepted';
+        if (app.status === 'Denied') statusClass = 'denied';
+
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>
+            <strong>${app.user}</strong><br>
+            <span style="font-size: 0.75rem; color: var(--text-muted);">ID: ${app.discordId}</span>
+          </td>
+          <td>
+            Age: ${app.age}<br>
+            <span style="font-size: 0.75rem; color: var(--text-muted);">${app.dailyHours}</span>
+          </td>
+          <td>
+            <span style="font-size: 0.8rem;">Bots: ${app.botsUsed}</span><br>
+            <span style="font-size: 0.75rem; color: var(--text-muted);" title="${app.reason}">Reason: ${app.reason.substring(0, 30)}...</span>
+          </td>
+          <td><span class="badge ${statusClass}">${app.status}</span></td>
+          <td>
+            <div class="action-btns">
+              <a href="https://discord.com/users/${app.discordId}" target="_blank" class="btn-dm" title="Open Discord DM">
+                <i class="fa-brands fa-discord"></i> DM
+              </a>
+              <button class="action-btn btn-accept" data-id="${app.id}" data-action="Accepted">Accept</button>
+              <button class="action-btn btn-deny" data-id="${app.id}" data-action="Denied">Deny</button>
+              <button class="action-btn btn-delete" data-id="${app.id}" data-action="Delete"><i class="fa-solid fa-trash"></i></button>
+            </div>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+
+      document.querySelectorAll('.btn-accept, .btn-deny').forEach(button => {
+        button.addEventListener('click', (e) => {
+          const id = Number(e.currentTarget.getAttribute('data-id'));
+          const action = e.currentTarget.getAttribute('data-action');
+          updateStatus(id, action);
+        });
+      });
+
+      document.querySelectorAll('.btn-delete').forEach(button => {
+        button.addEventListener('click', (e) => {
+          const id = Number(e.currentTarget.getAttribute('data-id'));
+          deleteApp(id);
+        });
+      });
+    }
+
+    /**
+     * @param {number} id
+     * @param {string} newStatus
+     */
+    function updateStatus(id, newStatus) {
+      const target = applications.find(app => app.id === id);
+      if (target) {
+        target.status = newStatus;
+        renderTable();
+      }
+    }
+
+    /**
+     * @param {number} id
+     */
+    function deleteApp(id) {
+      applications = applications.filter(app => app.id !== id);
+      renderTable();
+    }
+
+    const appForm = document.getElementById('appForm');
+    if (appForm) {
+      appForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        applications.unshift({
+          id: Date.now(),
+          user: document.getElementById('discordUser').value,
+          discordId: document.getElementById('discordId').value,
+          age: document.getElementById('age').value,
+          timezone: document.getElementById('timezone').value,
+          dailyHours: document.getElementById('dailyHours').value,
+          botsUsed: document.getElementById('botsUsed').value,
+          reason: document.getElementById('reason').value,
+          status: "Pending"
+        });
+        appForm.reset();
+        alert('Application submitted successfully!');
+      });
+    }
+  </script>
+</body>
+</html>
